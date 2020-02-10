@@ -1,33 +1,47 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 
-import { postData } from "../actions";
+import { putData } from "../actions";
 
-const SmurfForm = props => {
+const PutSmurfForm = props => {
+    const [id, setId] = useState("");
     const [name, setName] = useState("");
     const [age, setAge] = useState("");
     const [height, setHeight] = useState("");
 
   const handlePostData = e => {
     e.preventDefault();
-    console.log(props.smurfs);
-    let smurf = {name: name, age: age, height: height};
-    props.postData(smurf);
+    
+    let smurf = {id: id};
+
+    if(name.length > 0)
+        smurf.name = name;
+
+    if(age.length > 0)
+        smurf.age = age;
+
+    if(height.length > 0)
+        smurf.height = height;
+
+    console.log(props.smurf);
+    props.putData(smurf);
+    setId("");
     setName("");
     setAge("");
     setHeight("");
   };
 
-  if(props.isPostingData)
-    return <div>**we are posting data**</div>
+  if(props.isPuttingData)
+    return <div>**we are modifying data**</div>
 
   return (
     <form onSubmit={e=>handlePostData(e)}>
-        <label>Add a new Smurf!!!!</label>
+        <label>Modify an existing Smurf!!!!</label>
+        <input type="text" placeholder="ID#" onChange={e => setId(e.target.value)} value={id} />
         <input type="text" placeholder="Name" onChange={e => setName(e.target.value)} value={name} />
         <input type="text" placeholder="Age" onChange={e => setAge(e.target.value)} value={age}/>
         <input type="text" placeholder="Height" onChange={e => setHeight(e.target.value)} value={height}/>
-        <button type="submit">Add Smurf</button>
+        <button type="submit">Modify Smurf</button>
     </form>
   );
 };
@@ -35,11 +49,11 @@ const SmurfForm = props => {
 const mapStateToProps = state => {
   return {
     smurfs: state.smurfs,
-    isPostingData: state.isPostingData
+    isPuttingData: state.isPuttingData
   };
 };
 
 export default connect(
   mapStateToProps,
-  { postData }
-)(SmurfForm);
+  { putData }
+)(PutSmurfForm);
